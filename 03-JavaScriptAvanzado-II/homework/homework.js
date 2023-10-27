@@ -1,6 +1,65 @@
 'use strict';
+/*
+Closures - funxion padre que retorna una funcion hija y depsues la ejecutas.
+claúsulas, son funciones que retornan otras funciones, las cuales puedes acceder al contexto de su
+su función padre y obtener informaci+on de allí.  
+la funcion hija tiene que utilizar una variable de su padre
 
-// Closures
+function contenedor(){
+  var caja=[];
+  return function(item){
+    caja.push(item);
+    return caja;
+  }
+}
+var micontenedor=contenedor();
+console.log(micontenedor("libro")); ["libro"]
+console.log(micontenedor("disco")); ["libro","disco"]
+var miotrocontenedor=contenedor;
+console.log(miotrocontenedor("teclado"));["teclado"]
+
+This
+var persona={
+  nombre="Ignacio";
+  apellido="Cenni";
+}
+function saludar(){
+  console.log("Hola mi nombre es", this.nombre);
+}
+var salduarpersona=saludar.bind(persona,"cómo estás");
+saludarpersona();
+/ con bind siempre aclarar el primero a this, sino existe poner null.
+
+Call
+var persona={
+  nombre="Ignacio";
+  apelldio="Cenni";
+};
+
+function saludar(saludo,a,b,c) {
+  console.log(saludo,"mi nombre es", this.nombre);
+  console.log(a);
+  console.log(b);
+  console.log(c);
+}
+saludar.call(persona, "Hola",1,2,3);
+
+Appy - sólo pasa una array como argumentos
+var persona={
+  nombre="Ignacio";
+  apelldio="Cenni";
+};
+
+function saludar(saludo,a,b,c) {
+  console.log(saludo,"mi nombre es", this.nombre);
+  console.log(a);
+  console.log(b);
+  console.log(c);
+}
+var arr=["Hola",1,2,3];
+saludar.apply(persona, ["Hola",1,2,3] or arr);
+
+*/
 
 /* Ejercicio 1
 La función counter debe retornar otra función. Esta función retornada debe actuar como un contador, retornando 
@@ -13,7 +72,21 @@ nuevoContador()     // 2
 const otroContador = counter()
 otroContador()      // 1
 otroContador()      // 2 */
-function counter() {}
+function counter() {
+  let count=1;
+  return function(){
+    return count++;
+    //++count - primero aumenta y despues retorna : count++ - primero retonra y despues aumenta
+  }
+}
+
+const nuevoContador=counter()
+console.log(nuevoContador())
+console.log(nuevoContador())
+
+const otroContador=counter()
+console.log(otroContador())
+console.log(otroContador())
 
 /* Ejercicio 2
 Tu tarea aquí es lograr, mediante un closure, que cacheFunction actúe como una memoria caché para el callback 
@@ -33,7 +106,15 @@ otra vez cálculos que ya se hicieron anteriormente.
   squareCache(5)    // invocará a square(5), almacenará el resultado y lo retornará
   squareCache(5)    // no volverá a invocar a square, simplemente buscará en la caché cuál es el resultado de square(5) y lo retornará (tip: si usaste un objeto, podés usar hasOwnProperty) */
 
-function cacheFunction(cb) {}
+function cacheFunction(cb) {
+  let cache={}
+  return function(arg){
+    if (!cache.hasOwnProperty(arg)){
+      cache[arg]=cb(arg);
+    }
+    return cache[arg]
+  }
+}
 
 //----------------------------------------
 
@@ -58,8 +139,10 @@ function getNombre() {
   Usando el método bind() guardar, en las dos variables declaradas a continuación, dos funciones que actúen como getNombre pero retornen el nombre del instructor y del alumno, respectivamente.
 */
 
-let getNombreInstructor = getNombre.bind();
-let getNombreAlumno = getNombre.bind();
+let getNombreInstructor = getNombre.bind(instructor);
+let getNombreAlumno = getNombre.bind(alumno);
+console.log(getNombreInstructor())
+console.log(getNombreAlumno())
 
 /*
   Ejercicio 4
@@ -70,9 +153,12 @@ function crearCadena(delimitadorIzquierda, delimitadorDerecha, cadena) {
     return delimitadorIzquierda + cadena + delimitadorDerecha;
 }
 
-let textoAsteriscos = crearCadena.bind();
-let textoGuiones = crearCadena.bind();
-let textoUnderscore = crearCadena.bind();
+let textoAsteriscos = crearCadena.bind(null,"*","*");
+let textoGuiones = crearCadena.bind("-","-","-");
+let textoUnderscore = crearCadena.bind(alumno,"_","_");
+console.log(textoAsteriscos("Hola"));
+console.log(textoGuiones("Hola"));
+console.log(textoUnderscore("Hola"))
 
 // No modifiquen nada debajo de esta linea
 // --------------------------------
